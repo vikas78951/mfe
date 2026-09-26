@@ -7,17 +7,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/setup@v3
         with:
           runtime: node@24
           cache: true
-
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec turbo run build
-
       - uses: actions/upload-artifact@v7
         with:
           name: mfe-build
@@ -29,10 +26,34 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: development
-
     steps:
       - uses: actions/download-artifact@v8
         with:
           name: mfe-build
       - name: Deploy
         run: echo "Deploying MFE to development"
+
+  deploy-staging:
+    needs: deploy-development
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: mfe-build
+
+      - name: Deploy
+        run: echo "Deploying MFE to staging"
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: mfe-build
+
+      - name: Deploy
+        run: echo "Deploying MFE to production"
