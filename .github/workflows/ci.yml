@@ -15,4 +15,4 @@ jobs:
           runtime: node@24
           cache: true
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec turbo run build
+      - run: pnpm exec turbo lint check-types build
