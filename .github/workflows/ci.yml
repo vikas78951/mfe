@@ -5,17 +5,34 @@ on:
   push:
     branches: [develop]
 jobs:
-  deploy-development:
+  build:
     runs-on: ubuntu-latest
-    environment: development
+
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/setup@v3
         with:
           runtime: node@24
           cache: true
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec turbo run build
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: mfe-build
+          path: |
+            apps/shell/dist
+            apps/accounts/dist
+
+  deploy-development:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: mfe-build
       - name: Deploy
-        run: |
-          echo "Deploying MFE to development"
+        run: echo "Deploying MFE to development"
