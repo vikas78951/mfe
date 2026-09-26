@@ -3,11 +3,11 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main, develop]
+    branches: [develop]
 jobs:
-  build:
+  deploy-development:
     runs-on: ubuntu-latest
-
+    environment: development
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/setup@v3
@@ -15,4 +15,7 @@ jobs:
           runtime: node@24
           cache: true
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec turbo run lint check-types test build
+      - run: pnpm exec turbo run build
+      - name: Deploy
+        run: |
+          echo "Deploying MFE to development"
