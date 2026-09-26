@@ -11,9 +11,6 @@ function App() {
       <section id="center">
         <div>
           <h1>Account MFE</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
         </div>
         <button
           type="button"
