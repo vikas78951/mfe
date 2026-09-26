@@ -1,5 +1,5 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import { federation } from "@module-federation/vite";
 import mgConfig from "./module-federation.config.ts";
 
@@ -7,4 +7,5 @@ import mgConfig from "./module-federation.config.ts";
 export default defineConfig({
   plugins: [react(), federation(mgConfig)],
   server: { port: 3000, strictPort: true },
+  test: { environment: "node", globals: true },
 });
