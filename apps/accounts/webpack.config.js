@@ -1,0 +1,1 @@
+import ModuleFederationPlugin from 'webpack'

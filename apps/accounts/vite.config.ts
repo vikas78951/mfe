@@ -1,0 +1,9 @@
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import mgConfig from "./module-federation.config.ts";
+import { federation } from "@module-federation/vite";
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), federation(mgConfig)],
+  server: { port: 3001, strictPort: true },
+});
