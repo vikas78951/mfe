@@ -3,7 +3,9 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
 
 permissions:
   contents: read
@@ -11,21 +13,27 @@ permissions:
 
 jobs:
   validate:
+    name: Validate
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v6
 
-      - uses: pnpm/setup@v3
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
         with:
           runtime: node@24
           cache: true
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - run: pnpm exec turbo run lint check-types test build
+      - name: Quality gate
+        run: pnpm exec turbo run lint check-types test build
 
-      - uses: actions/upload-artifact@v7
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
         with:
           name: mfe-build
           path: |
@@ -33,29 +41,37 @@ jobs:
             apps/accounts/dist
 
   docker:
+    name: Build and Push Images
     needs: validate
+    if: github.event_name == 'push'
+
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v6
 
-      - uses: pnpm/setup@v3
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
         with:
           runtime: node@24
           cache: true
 
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec turbo run build
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build applications
+        run: pnpm exec turbo run build
 
       - name: Login to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Shell
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: docker/shell.Dockerfile
@@ -64,7 +80,7 @@ jobs:
             ghcr.io/vikas78951/mfe-shell:${{ github.sha }}
 
       - name: Build and push Accounts
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: docker/accounts.Dockerfile

@@ -32,3 +32,16 @@ fin-core/
 Next,
 Keep you response short but add all the necessary things optimize the steps , instead of mini step take batch it in once, stick to the plan , donot wast time, Be precise and vefify you sugestion agains plan, We need to go faster, the step you are taking is too show
 
+## Next Phase
+
+Kubernetes
+Helm
+ArgoCD
+AWS
+Terraform
+SSH deployment
+self-hosted runners
+complex reusable workflows
+multi-platform builds
+advanced provenance
+elaborate rollback infrastructure
