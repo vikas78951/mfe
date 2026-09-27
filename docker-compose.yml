@@ -1,0 +1,14 @@
+services:
+  shell:
+    build:
+      context: .
+      dockerfile: docker/shell.Dockerfile
+    ports:
+      - "3000:80"
+
+  accounts:
+    build:
+      context: .
+      dockerfile: docker/accounts.Dockerfile
+    ports:
+      - "3001:80"

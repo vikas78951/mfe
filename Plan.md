@@ -29,4 +29,6 @@ fin-core/
 ├── pnpm-workspace.yaml
 └── turbo.json
 
-Next, Keep you response as short as possible , stick to the plan , donot wast time, Be precise and vefify you sugestion agains plan
+Next,
+Keep you response short but add all the necessary things optimize the steps , instead of mini step take batch it in once, stick to the plan , donot wast time, Be precise and vefify you sugestion agains plan, We need to go faster, the step you are taking is too show
+

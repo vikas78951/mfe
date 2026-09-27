@@ -3,18 +3,28 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [develop]
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  packages: write
+
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v7
+
       - uses: pnpm/setup@v3
         with:
           runtime: node@24
           cache: true
+
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec turbo run build
+
+      - run: pnpm exec turbo run lint check-types test build
+
       - uses: actions/upload-artifact@v7
         with:
           name: mfe-build
@@ -22,38 +32,42 @@ jobs:
             apps/shell/dist
             apps/accounts/dist
 
-  deploy-development:
-    needs: build
+  docker:
+    needs: validate
     runs-on: ubuntu-latest
-    environment: development
-    steps:
-      - uses: actions/download-artifact@v8
-        with:
-          name: mfe-build
-      - name: Deploy
-        run: echo "Deploying MFE to development"
-
-  deploy-staging:
-    needs: deploy-development
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - uses: actions/download-artifact@v8
-        with:
-          name: mfe-build
-
-      - name: Deploy
-        run: echo "Deploying MFE to staging"
-
-  deploy-production:
-    needs: deploy-staging
-    runs-on: ubuntu-latest
-    environment: production
 
     steps:
-      - uses: actions/download-artifact@v8
-        with:
-          name: mfe-build
+      - uses: actions/checkout@v7
 
-      - name: Deploy
-        run: echo "Deploying MFE to production"
+      - uses: pnpm/setup@v3
+        with:
+          runtime: node@24
+          cache: true
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec turbo run build
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Shell
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/shell.Dockerfile
+          push: true
+          tags: |
+            ghcr.io/vikas78951/mfe-shell:${{ github.sha }}
+
+      - name: Build and push Accounts
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/accounts.Dockerfile
+          push: true
+          tags: |
+            ghcr.io/vikas78951/mfe-accounts:${{ github.sha }}
