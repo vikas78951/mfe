@@ -10,4 +10,7 @@ export default createModuleFederationConfig({
     },
   },
   shared: ["react", "react-dom"],
+  dts: {
+    consumeTypes: false,
+  },
 });

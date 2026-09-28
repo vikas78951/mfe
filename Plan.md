@@ -11,10 +11,12 @@ System D — Docker and K8
 
 fin-core/
 ├── apps/
-│ ├── shell/
+│ ├── dashboard/
 │ ├── accounts/
-│ ├── payments/
-│ └── analytics/
+│ ├── onboarding/
+│ ├── documents/
+│ ├── analytics/
+│ └── realtime/
 │
 ├── packages/
 │ ├── ui/
@@ -45,3 +47,14 @@ complex reusable workflows
 multi-platform builds
 advanced provenance
 elaborate rollback infrastructure
+
+federated TypeScript contracts yet.
+Module Federation runtime plugin yet
+
+## MFE
+
+MFE A — Accounts MFE
+MFE B — Onboarding MFE
+MFE C — Documents MFE
+MFE D — Analytics MFE
+MFE E — Realtime MFE
